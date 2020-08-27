@@ -33,9 +33,9 @@ type UserInfo struct {
 //BuyProduct struct
 type BuyProduct struct {
 	UserName    string `json:"user_name"`
-	Wallet      int    `json:"wallet"`
 	ProductName string `json:"product_name"`
-	Amount      string `json:"amount"`
+	Amount      int    `json:"amount"`
+	Price       int    `json:"price"`
 }
 
 //SenderMail struct

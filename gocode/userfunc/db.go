@@ -26,6 +26,25 @@ func ValidationUser(username string) bool {
 	return true
 }
 
+//SelectUserDB func
+func SelectUserDB(component string, username string) string {
+	db := dbadapter.OpenConnection()
+	defer db.Close()
+	QueryString := fmt.Sprintf("select %v from USER_INFO where USERNAME = '%v'", component, username)
+	fmt.Println(QueryString)
+	rows, err := db.Query(QueryString)
+	if err != nil {
+		fmt.Println(fmt.Sprintf("%v", err))
+		return ""
+	}
+	defer rows.Close()
+	var Rs string
+	for rows.Next() {
+		rows.Scan(&Rs)
+	}
+	return Rs
+}
+
 //InsUserDB func
 func InsUserDB(username string, wallet int, email string) error {
 	db := dbadapter.OpenConnection()

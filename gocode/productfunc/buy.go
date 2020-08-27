@@ -6,25 +6,39 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 
 	"github.com/derpl-del/go-api.git/gocode/dbadapter"
 	"github.com/derpl-del/go-api.git/gocode/emailfunc"
 	"github.com/derpl-del/go-api.git/gocode/strcode"
 	"github.com/derpl-del/go-api.git/gocode/userfunc"
+	"github.com/derpl-del/go-api.git/gocode/utilfunc"
 )
+
+var validation bool
 
 //BuyProduct func
 func BuyProduct(w http.ResponseWriter, r *http.Request) {
 	ReqBody, _ := ioutil.ReadAll(r.Body)
-	emailfunc.GenerateEmail("gilsptr@gmail.com", "buy")
 	var Request strcode.BuyProduct
 	json.Unmarshal(ReqBody, &Request)
-	validation := userfunc.ValidationUser(Request.UserName)
-	if validation == false {
+	userval := userfunc.SelectUserDB("username||'|'||EMAIL||'|'||wallet", Request.UserName)
+	usermap := utilfunc.TokenizeWithValue("username|mail|wallet", userval)
+	fmt.Println(usermap)
+	price := Request.Price * Request.Amount
+	if usermap["username"] != "" {
+		validation = true
+	} else {
+		validation = false
+	}
+	if validation == true {
 		isproduct := ProducExistsValidation(Request.ProductName)
 		if isproduct == true {
-			out, err := ProcessBuyDB(Request.UserName, Request.Wallet, Request.ProductName, Request.Amount)
+			out, err := ProcessBuyDB(usermap["username"], price, Request.ProductName, Request.Amount)
 			if err == nil && out == "success" {
+				mailval := strconv.Itoa(Request.Amount) + "|" + strconv.Itoa(Request.Price) + "|" + strconv.Itoa(price)
+				fmt.Println(mailval)
+				emailfunc.GenerateEmail(usermap["mail"], mailval, "invoice")
 				errorcode = "0000"
 				errormsg = "success"
 			} else {
@@ -44,11 +58,11 @@ func BuyProduct(w http.ResponseWriter, r *http.Request) {
 }
 
 //ProcessBuyDB func
-func ProcessBuyDB(username string, wallet int, productname string, amount string) (string, error) {
+func ProcessBuyDB(username string, price int, productname string, amount int) (string, error) {
 	db := dbadapter.OpenConnection()
 	defer db.Close()
 	//using function
-	query := fmt.Sprintf("BEGIN :1 := PROCESSBUY('%v',%v); END;", username, wallet)
+	query := fmt.Sprintf("BEGIN :1 := PROCESSBUY('%v',%v); END;", username, price)
 	var out string
 	_, err := db.Exec(query, sql.Out{Dest: &out})
 	if err != nil {

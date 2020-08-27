@@ -11,6 +11,7 @@ import (
 
 	"github.com/derpl-del/go-api.git/gocode/endecode"
 	"github.com/derpl-del/go-api.git/gocode/strcode"
+	"github.com/derpl-del/go-api.git/gocode/utilfunc"
 )
 
 //SenderEnv var
@@ -29,13 +30,23 @@ func GenerateEmailSender(w http.ResponseWriter, r *http.Request) {
 	SenderEnv.Password = Request.Password
 }
 
+var subject string
+var context string
+var message string
+
 //GenerateEmail Func
-func GenerateEmail(tomail string, input string) {
+func GenerateEmail(tomail string, input string, choose string) {
 	to := []string{tomail}
 	//cc := []string{""}
-	subject := "Test mail"
-	context := endecode.GenerateEn(input)
-	message := "Please Verify Your User" + "\n" + "http://localhost:9000/api/v1/verifyuser?req=" + context
+	if choose == "user verify" {
+		subject = "User Verify"
+		context = endecode.GenerateEn(input)
+		message = "Please Verify Your User" + "\n" + "http://localhost:9000/api/v1/verifyuser?req=" + context
+	} else if choose == "invoice" {
+		subject = "invoice"
+		usermap := utilfunc.TokenizeWithValue("amount|price|total", input)
+		message = "Your Invoice Is :" + "\n" + "Price : " + usermap["price"] + "\n" + "Amount : " + usermap["amount"] + "\n" + "=================\n" + "Total : " + usermap["total"]
+	}
 	if SenderEnv.Sender != "" && SenderEnv.Password != "" {
 		err := sendMail(to, subject, message)
 		if err != nil {
@@ -46,7 +57,6 @@ func GenerateEmail(tomail string, input string) {
 	} else {
 		log.Println("Set Sender First")
 	}
-
 }
 
 func sendMail(to []string, subject, message string) error {

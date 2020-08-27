@@ -37,7 +37,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 			errorcode = "0003"
 			errormsg = fmt.Sprintf("%v", err)
 		} else {
-			emailfunc.GenerateEmail(ReqUser.Mail, ReqUser.UserName)
+			emailfunc.GenerateEmail(ReqUser.Mail, ReqUser.UserName, "user verify")
 			errorcode = "0000"
 			errormsg = "success"
 		}
