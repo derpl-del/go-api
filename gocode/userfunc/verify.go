@@ -14,16 +14,16 @@ import (
 //UserVerify func
 func UserVerify(w http.ResponseWriter, r *http.Request) {
 	req := r.FormValue("req")
-	fmt.Println(req)
+	//fmt.Println(req)
 	result := endecode.GenerateDe(req)
 	duplicate := UserExistsValidation(result)
 	if duplicate == true {
-		fmt.Println("ada")
+		//fmt.Println("ada")
 		var jsonvalue strcode.UserInfo
 		filename := result + ".json"
 		bytevalue := readfunc.ReadFile("gofile/tmpuser/", filename)
 		json.Unmarshal(bytevalue, &jsonvalue)
-		fmt.Println(jsonvalue.UserName)
+		//fmt.Println(jsonvalue.UserName)
 		err := InsUserDB(jsonvalue.UserName, jsonvalue.Wallet, jsonvalue.Mail)
 		if err != nil {
 			fmt.Println(fmt.Sprintf("%v", err))
@@ -31,7 +31,7 @@ func UserVerify(w http.ResponseWriter, r *http.Request) {
 			writefunc.DeleteFile("gofile/tmpuser/" + filename)
 		}
 	} else {
-		fmt.Println("tidak")
+		//fmt.Println("tidak")
 	}
 
 }

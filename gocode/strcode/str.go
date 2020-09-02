@@ -43,3 +43,11 @@ type SenderMail struct {
 	Sender   string `json:"sender"`
 	Password string `json:"password"`
 }
+
+//RequestCreateUser struct
+type RequestCreateUser struct {
+	UserName    string `json:"user_name"`
+	ProductName string `json:"product_name"`
+	Amount      int    `json:"amount"`
+	Price       int    `json:"price"`
+}

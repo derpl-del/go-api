@@ -53,9 +53,9 @@ func GenerateEmail(tomail string, input string, choose string) {
 			log.Fatal(err.Error())
 		}
 
-		log.Println("Mail sent!")
+		//log.Println("Mail sent!")
 	} else {
-		log.Println("Set Sender First")
+		//log.Println("Set Sender First")
 	}
 }
 

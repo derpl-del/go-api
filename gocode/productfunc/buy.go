@@ -10,9 +10,11 @@ import (
 
 	"github.com/derpl-del/go-api.git/gocode/dbadapter"
 	"github.com/derpl-del/go-api.git/gocode/emailfunc"
+	"github.com/derpl-del/go-api.git/gocode/readfunc"
 	"github.com/derpl-del/go-api.git/gocode/strcode"
 	"github.com/derpl-del/go-api.git/gocode/userfunc"
 	"github.com/derpl-del/go-api.git/gocode/utilfunc"
+	"github.com/derpl-del/go-api.git/gocode/writefunc"
 )
 
 var validation bool
@@ -24,8 +26,8 @@ func BuyProduct(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal(ReqBody, &Request)
 	userval := userfunc.SelectUserDB("username||'|'||EMAIL||'|'||wallet", Request.UserName)
 	usermap := utilfunc.TokenizeWithValue("username|mail|wallet", userval)
-	fmt.Println(usermap)
-	price := Request.Price * Request.Amount
+	//fmt.Println(usermap)
+
 	if usermap["username"] != "" {
 		validation = true
 	} else {
@@ -33,18 +35,35 @@ func BuyProduct(w http.ResponseWriter, r *http.Request) {
 	}
 	if validation == true {
 		isproduct := ProducExistsValidation(Request.ProductName)
-		if isproduct == true {
+		var jsonvalue strcode.ProductInfo
+		filename := Request.ProductName + ".json"
+		bytevalue := readfunc.ReadFile("gofile/product/", filename)
+		json.Unmarshal(bytevalue, &jsonvalue)
+		price := jsonvalue.ProductPrice * Request.Amount
+		productamount := jsonvalue.ProductAmount - Request.Amount
+		if isproduct == true && productamount >= 0 {
 			out, err := ProcessBuyDB(usermap["username"], price, Request.ProductName, Request.Amount)
 			if err == nil && out == "success" {
-				mailval := strconv.Itoa(Request.Amount) + "|" + strconv.Itoa(Request.Price) + "|" + strconv.Itoa(price)
-				fmt.Println(mailval)
+				mailval := strconv.Itoa(Request.Amount) + "|" + strconv.Itoa(jsonvalue.ProductPrice) + "|" + strconv.Itoa(price)
+				//fmt.Println(mailval)
 				emailfunc.GenerateEmail(usermap["mail"], mailval, "invoice")
+				path := "gofile/product/" + jsonvalue.ProductName + ".json"
+				jsonvalue.ProductAmount = productamount
+				bytejs, _ := json.Marshal(jsonvalue)
+				err := writefunc.WriteFile(path, bytejs)
+				if err != nil {
+					errorcode = "9999"
+					errormsg = fmt.Sprintf("%v", err)
+				}
 				errorcode = "0000"
 				errormsg = "success"
 			} else {
 				errorcode = "0003"
 				errormsg = "wallet is not enough"
 			}
+		} else if productamount <= 0 {
+			errorcode = "0004"
+			errormsg = "product already sold out"
 		} else {
 			errorcode = "0002"
 			errormsg = "product not found"

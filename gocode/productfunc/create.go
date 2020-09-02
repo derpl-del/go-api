@@ -54,7 +54,7 @@ func CreateProductHandler(productname string) bool {
 		if data.ProductName == productname {
 			return true
 		}
-		fmt.Println(fmt.Sprintf("product name : %v", data.ProductName))
+		//fmt.Println(fmt.Sprintf("product name : %v", data.ProductName))
 	}
 	return false
 }

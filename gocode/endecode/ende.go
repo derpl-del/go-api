@@ -4,7 +4,6 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"encoding/base64"
-	"fmt"
 )
 
 var key = "a very very very very secret key"
@@ -12,14 +11,14 @@ var key = "a very very very very secret key"
 //GenerateEn func
 func GenerateEn(input string) string {
 	ciphertext := Encrypt(key, input)
-	fmt.Println(ciphertext)
+	//fmt.Println(ciphertext)
 	return ciphertext
 }
 
 //GenerateDe func
 func GenerateDe(input string) string {
 	result := Decrypt(key, input)
-	fmt.Println(result)
+	//fmt.Println(result)
 	return result
 }
 
@@ -27,7 +26,7 @@ var iv = []byte{35, 46, 57, 24, 85, 35, 24, 74, 87, 35, 88, 98, 66, 32, 14, 05}
 
 //Encrypt func
 func Encrypt(key, text string) string {
-	fmt.Println(text)
+	//fmt.Println(text)
 	block, err := aes.NewCipher([]byte(key))
 	if err != nil {
 		panic(err)
@@ -41,7 +40,7 @@ func Encrypt(key, text string) string {
 
 //Decrypt func
 func Decrypt(key, text string) string {
-	fmt.Println(text)
+	//fmt.Println(text)
 	block, err := aes.NewCipher([]byte(key))
 	if err != nil {
 		panic(err)

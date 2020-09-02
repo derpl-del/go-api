@@ -1,7 +1,6 @@
 package readfunc
 
 import (
-	"fmt"
 	"os"
 )
 
@@ -10,7 +9,7 @@ func ProductHandler(path string, filename string) error {
 	file := path + filename
 	_, err := os.Open(file)
 	if err != nil {
-		fmt.Println(err)
+		//fmt.Println(err)
 		return err
 	}
 	return nil

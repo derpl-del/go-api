@@ -31,10 +31,10 @@ func SelectUserDB(component string, username string) string {
 	db := dbadapter.OpenConnection()
 	defer db.Close()
 	QueryString := fmt.Sprintf("select %v from USER_INFO where USERNAME = '%v'", component, username)
-	fmt.Println(QueryString)
+	//fmt.Println(QueryString)
 	rows, err := db.Query(QueryString)
 	if err != nil {
-		fmt.Println(fmt.Sprintf("%v", err))
+		//fmt.Println(fmt.Sprintf("%v", err))
 		return ""
 	}
 	defer rows.Close()
