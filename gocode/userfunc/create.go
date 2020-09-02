@@ -19,18 +19,19 @@ var emailRegex = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z
 
 //CreateUser func
 func CreateUser(w http.ResponseWriter, r *http.Request) {
-	var validation bool
+	var result string
 	ReqBody, _ := ioutil.ReadAll(r.Body)
 	var ReqUser strcode.UserInfo
 	json.Unmarshal(ReqBody, &ReqUser)
 	duplicate := UserExistsValidation(ReqUser.UserName)
 	if duplicate == true {
-		validation = false
+		result = "0001"
 	} else {
-		validation = ValidationUser(ReqUser.UserName)
+		result = DuplicateDB(ReqUser.UserName, ReqUser.Mail)
+		fmt.Println(result)
 	}
 	isemail := IsEmailValid(ReqUser.Mail)
-	if validation == true && isemail == true && ReqUser.Wallet > 0 {
+	if result == "0000" && isemail == true && ReqUser.Wallet > 0 {
 		path := "gofile/tmpuser/" + ReqUser.UserName + ".json"
 		err := writefunc.WriteFile(path, ReqBody)
 		if err != nil {
@@ -41,14 +42,17 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 			errorcode = "0000"
 			errormsg = "success"
 		}
-	} else if validation == false {
+	} else if result == "0001" {
 		errorcode = "0001"
-		errormsg = "user already exists"
+		errormsg = "user already registered"
+	} else if result == "0002" {
+		errorcode = "0002"
+		errormsg = "mail already registered"
 	} else if isemail == false {
 		errorcode = "0004"
 		errormsg = "invalid mail value"
 	} else {
-		errorcode = "0002"
+		errorcode = "0005"
 		errormsg = "invalid wallet amount"
 	}
 	response := strcode.Response{ErrorCode: errorcode, ErrorMsg: errormsg}

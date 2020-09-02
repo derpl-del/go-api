@@ -39,11 +39,11 @@ func GenerateEmail(tomail string, input string, choose string) {
 	to := []string{tomail}
 	//cc := []string{""}
 	if choose == "user verify" {
-		subject = "User Verify"
+		subject = "[Learning Golang Sorry] User Verify"
 		context = endecode.GenerateEn(input)
 		message = "Please Verify Your User" + "\n" + "http://localhost:9000/api/v1/verifyuser?req=" + context
 	} else if choose == "invoice" {
-		subject = "invoice"
+		subject = "[Learning Golang Sorry] invoice"
 		usermap := utilfunc.TokenizeWithValue("amount|price|total", input)
 		message = "Your Invoice Is :" + "\n" + "Price : " + usermap["price"] + "\n" + "Amount : " + usermap["amount"] + "\n" + "=================\n" + "Total : " + usermap["total"]
 	}

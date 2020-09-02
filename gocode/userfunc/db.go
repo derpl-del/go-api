@@ -1,6 +1,7 @@
 package userfunc
 
 import (
+	"database/sql"
 	"fmt"
 
 	"github.com/derpl-del/go-api.git/gocode/dbadapter"
@@ -56,4 +57,24 @@ func InsUserDB(username string, wallet int, email string) error {
 	}
 	defer rows.Close()
 	return nil
+}
+
+//DuplicateDB func
+func DuplicateDB(username string, email string) string {
+	db := dbadapter.OpenConnection()
+	defer db.Close()
+	//using function
+	query := fmt.Sprintf("BEGIN :1 := DUPLICATEFUNC('%v','%v'); END;", username, email)
+	var out string
+	_, err := db.Exec(query, sql.Out{Dest: &out})
+	if err != nil {
+		return fmt.Sprintf("%v", err)
+	}
+	//using procedure
+	/*
+		var strArr string
+		db.Exec("begin PROCEDURE1(:1, :2, :3); end;", username, wallet, sql.Out{Dest: &strArr})
+		fmt.Printf("%v", strArr)
+	*/
+	return out
 }

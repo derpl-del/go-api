@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/derpl-del/go-api.git/gocode/endecode"
 	"github.com/derpl-del/go-api.git/gocode/readfunc"
@@ -15,7 +16,10 @@ import (
 func UserVerify(w http.ResponseWriter, r *http.Request) {
 	req := r.FormValue("req")
 	//fmt.Println(req)
+	req = strings.ReplaceAll(req, " ", "+")
+	//fmt.Println(req)
 	result := endecode.GenerateDe(req)
+	//fmt.Println(result)
 	duplicate := UserExistsValidation(result)
 	if duplicate == true {
 		//fmt.Println("ada")
