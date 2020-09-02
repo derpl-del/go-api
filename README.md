@@ -3,6 +3,7 @@
 ========================================================================
 
 API generatesender POST
+
 Endpoint :
 localhost:9000/api/v1/generatesender
 
@@ -15,6 +16,7 @@ API for set your email sender while sending invoice and verifyuser
 ========================================================================
 
 API createuser POST
+
 Endpoint :
 localhost:9000/api/v1/createuser
 
@@ -30,6 +32,7 @@ API for creating username with validation, if validation equal true verification
 ========================================================================
 
 API Verify User POST
+
 Endpoint :
 localhost:9000/api/v1/verifyuser
 
@@ -42,6 +45,7 @@ API for verify your email, while trigger data will be insert to database, if use
 ========================================================================
 
 API createproduct POST
+
 Endpoint :
 localhost:9000/api/v1/createproduct
 
