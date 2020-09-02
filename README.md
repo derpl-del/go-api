@@ -1,6 +1,7 @@
 # go-api
 
 ========================================================================
+
 API generatesender POST
 Endpoint :
 localhost:9000/api/v1/generatesender
@@ -12,6 +13,7 @@ Desc :
 API for set your email sender while sending invoice and verifyuser
 
 ========================================================================
+
 API createuser POST
 Endpoint :
 localhost:9000/api/v1/createuser
@@ -26,6 +28,7 @@ Desc :
 API for creating username with validation, if validation equal true verification email will be send
 
 ========================================================================
+
 API Verify User POST
 Endpoint :
 localhost:9000/api/v1/verifyuser
@@ -37,6 +40,7 @@ Desc :
 API for verify your email, while trigger data will be insert to database, if user already trigger more than 1 the request will be ignored
 
 ========================================================================
+
 API createproduct POST
 Endpoint :
 localhost:9000/api/v1/createproduct
@@ -51,6 +55,7 @@ Desc :
 API for creating product with validation, if validation equal true product will be created in file (.JSON)
 
 ========================================================================
+
 API buyproduct POST
 Endpoint :
 localhost:9000/api/v1/buyproduct
